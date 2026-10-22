@@ -1,131 +1,132 @@
-# Jotnote — จดโน้ตร่วมกัน
+# Jotnote — collaborative block notes
 
-แอปโน้ตแบบบล็อก (สไตล์ Notion) สำหรับทีมเล็ก ๆ แชร์ให้เพื่อนแก้ร่วมกันได้แบบเรียลไทม์ มอบหมายเช็กลิสต์พร้อมกำหนดวันและเวลา และมีหน้ารวมงานของตัวเองจากทุกโน้ต
+A Notion-style note-taking app for small teams. Share a note with friends and edit it together in real time, assign checklist items with a due date and time, and see all the tasks assigned to you in one place.
 
-โปรเจกต์รวมวิชา **Mobile** (Expo SDK 57 + React Native) และ **Cloud** (Supabase)
+Built as a combined project for a **Mobile** course (Expo SDK 57 + React Native) and a **Cloud** course (Supabase).
 
-> ผู้พัฒนา: พงศกร เพิ่มคำ (Pongsakorn Phoemkham) · คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเทคโนโลยีราชมงคลสุวรรณภูมิ
+> Author: Pongsakorn Phoemkham · Faculty of Science and Technology, Rajamangala University of Technology Suvarnabhumi
+>
+> 🇹🇭 Thai version: [README.th.md](README.th.md)
 
-## ฟีเจอร์
+## Features
 
-**โน้ตและบล็อก**
-- โน้ตแบบบล็อก 3 ชนิด: หัวข้อ, ข้อความ, เช็กลิสต์ (เพิ่ม แก้ไข ลบ เลื่อนลำดับ)
-- เลือกได้ว่าจะเพิ่มบล็อกใหม่ใต้หัวข้อไหน หรือไม่อยู่ใต้หัวข้อ
-- เปลี่ยนสีตัวอักษรได้ 6 สี สีของหัวข้อใช้กำกับทั้งส่วน (เส้นสีด้านซ้ายของบล็อกใต้หัวข้อนั้น)
-- ค้นหาโน้ต กรอง (ทั้งหมด / ของฉัน / แชร์กับฉัน) ลบโน้ต หรือออกจากโน้ตที่ถูกแชร์
+**Notes and blocks**
+- Three block types: heading, text and checklist (add, edit, delete, reorder).
+- Choose which heading a new block goes under, or add it outside any heading.
+- Six text colors. A heading's color also marks its whole section (a colored bar beside the blocks under it).
+- Search notes, filter (All / Mine / Shared with me), delete a note, or leave a note shared with you.
 
-**การทำงานร่วมกัน**
-- แชร์ได้ 2 วิธี: ด้วยอีเมล หรือด้วย **รหัสเชิญ 6 ตัว** (สิทธิ์ แก้ไขได้ / ดูอย่างเดียว) ปิดหรือสร้างรหัสใหม่ได้
-- อัปเดตเรียลไทม์ (Supabase Realtime) และรายการโน้ตอัปเดตเองเมื่อมีคนแชร์
-- แสดงว่าใครเปิดโน้ตอยู่ (Presence) และป้าย "แก้โดย ..." ต่อบล็อก
+**Collaboration**
+- Share by **e-mail** or by a **6-character invite code** (editor or viewer access). Codes can be regenerated or turned off.
+- Real-time updates (Supabase Realtime); the notes list refreshes by itself when someone shares a note with you.
+- Presence (who has the note open) and a "last edited by" badge on every block.
 
-**งาน**
-- มอบหมายเช็กลิสต์ให้สมาชิก กำหนด **วันและเวลา** ครบกำหนด (แสดงเป็นไทย พ.ศ.) ขึ้นป้ายเลยกำหนดตามเวลาจริง
-- หน้า **งานของฉัน** รวมงานที่ถูกมอบหมายจากทุกโน้ต เรียงตามเวลาครบกำหนด
+**Tasks**
+- Assign a checklist item to a member and set a due **date and time** (shown in Thai, Buddhist-era year). Items turn "overdue" at the actual due time.
+- A **My tasks** screen collects everything assigned to you across all notes, ordered by due time.
 
-**บัญชี**
-- สมัคร / เข้าสู่ระบบ, แก้ชื่อที่แสดง, เปลี่ยนรหัสผ่าน, ออกจากระบบ, ลบบัญชี
-- ส่วนต่อประสานเป็นภาษาไทยทั้งหมด
+**Account**
+- Sign up / sign in, change display name, change password, sign out, delete account.
+- The whole interface is in Thai.
 
-## เทคโนโลยี
+## Tech stack
 
-| ส่วน | ที่ใช้ |
+| Area | Used |
 |---|---|
-| แอปมือถือ | Expo SDK 57, React Native 0.86, React 19.2, TypeScript, Expo Router |
-| ส่วนต่อประสาน | ฟอนต์ Prompt, `expo-linear-gradient`, `@expo/vector-icons`, `@react-native-community/datetimepicker` |
-| คลาวด์ | Supabase: Auth, PostgreSQL + Row Level Security, Realtime (postgres_changes + Presence), ฟังก์ชัน SQL (RPC) |
-| ไลบรารีเชื่อมต่อ | `@supabase/supabase-js`, AsyncStorage |
+| Mobile app | Expo SDK 57, React Native 0.86, React 19.2, TypeScript, Expo Router |
+| UI | Prompt font, `expo-linear-gradient`, `@expo/vector-icons`, `@react-native-community/datetimepicker` |
+| Cloud | Supabase: Auth, PostgreSQL with Row Level Security, Realtime (postgres_changes + Presence), SQL functions (RPC) |
+| Client libraries | `@supabase/supabase-js`, AsyncStorage |
 
-## สถาปัตยกรรม
+## Architecture
 
 ```
 Expo app (expo-router)  ──supabase-js──▶  Supabase
- (auth)  เข้าสู่ระบบ / สมัคร                Auth        ผู้ใช้ + เซสชัน
- (tabs)  โน้ต · งานของฉัน · โปรไฟล์          Postgres    profiles, notes, note_members,
- note/[id]  ตัวแก้ไขโน้ตแบบบล็อก                          blocks, note_invites
-                                           RLS         ควบคุมสิทธิ์ที่ฐานข้อมูล
+ (auth)  sign in / sign up                 Auth        users + sessions
+ (tabs)  Notes · My tasks · Profile        Postgres    profiles, notes, note_members,
+ note/[id]  block editor                               blocks, note_invites
+                                           RLS         access control in the database
                                            Realtime    postgres_changes + Presence
                                            RPC (SQL)   create_invite, join_note_by_code,
                                                        delete_my_account
 ```
 
-- แอปไม่มีเซิร์ฟเวอร์ที่เขียนเอง ติดต่อ Supabase โดยตรง และให้ฐานข้อมูลเป็นผู้บังคับสิทธิ์
-- **ทำไมแยกโน้ตเป็นบล็อก:** เก็บทั้งโน้ตเป็นก้อนเดียว สองคนแก้พร้อมกันจะเขียนทับกัน เก็บเป็นแถวต่อบล็อกจึงชนกันเฉพาะตอนแก้บล็อกเดียวกันพร้อมกัน (last-write-wins ระดับบล็อก)
-- งานที่ไม่ควรให้ไคลเอนต์ทำเอง เช่น เข้าร่วมด้วยรหัสเชิญและลบบัญชี ทำเป็นฟังก์ชัน SQL แบบ `security definer`
+- There is no custom server. The app talks to Supabase directly and the database enforces permissions.
+- **Why blocks?** If a note is stored as a single record, two people editing at the same time overwrite each other. Storing one row per block means edits only collide when two people change the *same block* at the same moment (last-write-wins per block).
+- Actions the client should not perform on its own, such as joining by invite code or deleting an account, are `security definer` SQL functions.
 
-## วิธีติดตั้งและรัน
+## Getting started
 
-### 1) เตรียม Supabase
-1. สร้างโปรเจกต์ใหม่ที่ [supabase.com](https://supabase.com)
-2. ไปที่ **SQL Editor** แล้วรันไฟล์ในโฟลเดอร์ `supabase/` **ตามลำดับนี้ ทีละไฟล์** (ลบข้อความเก่าในช่องก่อนวางทุกครั้ง):
+### 1) Set up Supabase
+1. Create a project at [supabase.com](https://supabase.com).
+2. Open **SQL Editor** and run the files in `supabase/` **in this order, one at a time** (clear the editor before pasting each file):
 
-   | ลำดับ | ไฟล์ | ทำอะไร |
+   | Order | File | Purpose |
    |---|---|---|
-   | 1 | `schema.sql` | ตาราง นโยบาย RLS ทริกเกอร์ Realtime |
-   | 2 | `migration-002.sql` | บล็อกหัวข้อ, ออกจากโน้ต, ลบบัญชี, รายการโน้ตเรียลไทม์ |
-   | 3 | `migration-003.sql` | ตารางและฟังก์ชันรหัสเชิญ |
-   | 4 | `migration-004.sql` | สีตัวอักษรของบล็อก |
-   | 5 | `migration-005.sql` | วันกำหนดเป็นวัน **และเวลา** |
+   | 1 | `schema.sql` | Tables, RLS policies, triggers, Realtime |
+   | 2 | `migration-002.sql` | Heading blocks, leave a shared note, delete account, live notes list |
+   | 3 | `migration-003.sql` | Invite-code table and functions |
+   | 4 | `migration-004.sql` | Block text color |
+   | 5 | `migration-005.sql` | Due date becomes date **and time** |
 
-3. **Authentication → Sign In / Providers → Email**: เปิดการสมัครสมาชิก และปิด *Confirm email* (เพื่อให้สมัครแล้วใช้ได้ทันที)
+3. **Authentication → Sign In / Providers → Email**: allow sign-ups and turn **off** *Confirm email* (so new accounts can be used immediately).
 
-### 2) ตั้งค่าแอป
+### 2) Configure the app
 ```bash
 npm install
 ```
-คัดลอก `.env.example` เป็น `.env` แล้วใส่ค่าจาก Supabase (Project Settings → API):
+Copy `.env.example` to `.env` and fill in the values from Supabase (Project Settings → API):
 ```
 EXPO_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=<anon public key>
 ```
-> ใช้เฉพาะ **anon (public) key** ห้ามใส่ `service_role` / secret key ในโปรเจกต์หรือใน git
+> Use only the **anon (public) key**. Never put the `service_role` / secret key in the project or in git.
 
-### 3) รันแอป
+### 3) Run
 ```bash
 npx expo start -c
 ```
-สแกน QR ด้วย **Expo Go เวอร์ชันที่รองรับ SDK 57** (อัปเดตแอป Expo Go ให้เป็นรุ่นล่าสุดจาก App Store / Play Store)
+Scan the QR code with **Expo Go for SDK 57** (update Expo Go to the latest version from the App Store / Play Store).
 
-| สถานการณ์ | คำสั่ง |
+| Situation | Command |
 |---|---|
-| มือถือกับคอมอยู่ Wi-Fi เดียวกัน | `npx expo start -c` |
-| คนละเครือข่าย (ต้องล็อกอิน Expo ก่อน: `npx expo login`) | `npx expo start --tunnel -c` |
-| ไม่ต้องการล็อกอิน Expo | `npx expo start --offline -c` |
+| Phone and computer on the same Wi-Fi | `npx expo start -c` |
+| Different networks (sign in to Expo first: `npx expo login`) | `npx expo start --tunnel -c` |
+| Without signing in to Expo | `npx expo start --offline -c` |
 
-ถ้า Expo Go ของคนสแกนล็อกอินบัญชี Expo อื่นอยู่และเปิดไม่ได้ ให้ออกจากระบบใน Expo Go ก่อน
+If Expo Go refuses to open the project because it is signed in to a different Expo account, sign out of Expo Go first.
 
-## ตรวจสอบโค้ด
+## Checks
 
 ```bash
-npx tsc --noEmit      # ตรวจชนิดข้อมูล
+npx tsc --noEmit      # type check
 npx expo lint         # ESLint
-npx expo-doctor       # ตรวจการตั้งค่าโครงการ
+npx expo-doctor       # project configuration check
 ```
 
-## โครงสร้างโปรเจกต์
+## Project structure
 
 ```
 app/
-  (auth)/            หน้าเข้าสู่ระบบและสมัครสมาชิก
-  (tabs)/            โน้ต · งานของฉัน · โปรไฟล์
-  note/[id].tsx      ตัวแก้ไขโน้ตแบบบล็อก
+  (auth)/            sign-in and sign-up screens
+  (tabs)/            Notes · My tasks · Profile
+  note/[id].tsx      block editor
 components/          BlockRow, DueEditor, AddBlockSheet, ShareSheet, PresenceBar, ui
 lib/                 supabase, blocks, notes, members, invites, profile, sections,
                      dates, theme, usePresence, useNoteRealtime, useSession
-supabase/            schema.sql และ migration-002 ถึง 005
-docs/                สเปกและแผนการพัฒนา
+supabase/            schema.sql and migration-002 … 005
 ```
 
-## ความปลอดภัยและข้อจำกัด
+## Security notes and limitations
 
-- **RLS:** ผู้ที่เป็น viewer แก้ไขไม่ได้แม้เรียก API ตรง ทริกเกอร์ `blocks_touch` ประทับผู้แก้และเวลาที่ฝั่งเซิร์ฟเวอร์
-- **รหัสเชิญ:** ใครมีรหัสก็เข้าร่วมได้ รหัสสุ่มด้วย `random()` ของ PostgreSQL (ไม่ใช่การสุ่มระดับเข้ารหัสลับ) ยังไม่มีวันหมดอายุและไม่จำกัดจำนวนครั้งที่ลองเดา เหมาะกับกลุ่มเล็กและการสาธิต
-- ตาราง `profiles` อ่านได้โดยผู้ใช้ที่ล็อกอินทุกคน (ใช้ค้นหาเพื่อนด้วยอีเมล) จึงเดาอีเมลผู้ใช้อื่นได้
-- **ไม่รองรับออฟไลน์** ต้องมีอินเทอร์เน็ต
-- แก้ **บล็อกเดียวกันพร้อมกัน** = คนบันทึกทีหลังชนะ
-- ยังไม่มีการแจ้งเตือนเมื่อถึงเวลาครบกำหนด และไม่มี "ลืมรหัสผ่านทางอีเมล"
-- ยังไม่ได้ประเมินความใช้งานได้กับกลุ่มผู้ใช้จริง และการทดสอบเรียลไทม์ข้ามสองอุปกรณ์ยังไม่ครบ
+- **RLS:** a viewer cannot edit even by calling the API directly. The `blocks_touch` trigger stamps the editor and time on the server, so they cannot be forged from the app.
+- **Invite codes:** anyone who has a code can join. Codes are generated with PostgreSQL's `random()` (not cryptographically secure), do not expire, and guessing attempts are not rate-limited. This is fine for small groups and demos; for real use, add expiry, rate limiting and a cryptographic random source.
+- The `profiles` table is readable by every signed-in user (used to find friends by e-mail), so other users' e-mail addresses can be enumerated.
+- **No offline support**: an Internet connection is required.
+- Editing the **same block** at the same time: the last save wins.
+- No notification when a due time is reached, and no "forgot password" e-mail flow.
+- Not yet evaluated with real users, and real-time behaviour across two devices has not been fully tested.
 
-## งานต่อยอด
+## Roadmap
 
-ออฟไลน์ (SQLite + คิวซิงก์), CRDT (เช่น Yjs) สำหรับพิมพ์บล็อกเดียวกันพร้อมกัน, รหัสเชิญแบบ QR และวันหมดอายุ, แจ้งเตือนเมื่อถึงกำหนด, รูปภาพและไฟล์แนบ (Supabase Storage)
+Offline mode (local SQLite + sync queue), CRDTs (e.g. Yjs) for simultaneous typing in one block, QR invite codes with expiry, due-time notifications, images and attachments (Supabase Storage).
